@@ -5,7 +5,6 @@ const dispositivoSchema = new mongoose.Schema({
     pir: { type: Number, required: true },
     rfid: { type: Number, required: true },
     servo: { type: Number, required: true },
-    huella: { type: Date, required: true },
     keypad: { type: Number, required: true },
     estado: { type: String, required: true },
 }, { timestamps: true });

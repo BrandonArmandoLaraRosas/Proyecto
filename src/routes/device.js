@@ -76,15 +76,31 @@ deviceRouter.post('/actualizarDatos', async (req, res) => {
         return res.status(500).json({ error: 'Error en el servidor' });
     }
 });
+
+
+deviceRouter.post('/actualizarVariable/:id',async(req,res)=>{
+    try {
+        const {id}=req.params;
+        const {variable,valor}=req.body;
+        const variableMin= variable.toLowerCase();
+        const dispositivo = await Dispositivo.findById(id);
+        if (!dispositivo) {
+            return res.status(404).json({ error: 'Dispositivo no encontrado' });
+        }
+        dispositivo[variableMin]=valor;
+        await dispositivo.save();
+        const historico=new Historico({idDevice:dispositivo._id,variable:variable,valor:valor,fecha:new Date()})
+        await historico.save();
+        res.status(200).json({message:'Valor actualizado correctamente'})
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+})
 //crear un nuevo dispositivo
 deviceRouter.post('', async (req, res) => {
     try {
         const dispositivo = new Dispositivo
-        dispositivo.pir = 0
-        dispositivo.rfid = 0
         dispositivo.servo = 0
-        dispositivo.huella = 0
-        dispositivo.keypad = 0
         dispositivo.estado = 0
         dispositivo.asignado = false
         await dispositivo.save();
